@@ -32,10 +32,12 @@ def convertMeshes(path):
 	copyEmpty(name)
 	projectPath = "output/" + name + "/" + name + ".syg"
 	project = pyglass.OpenProject(pyglass.path(projectPath))
-	#code.interact(local=locals())
 	l = glob.glob(path + "\\*.obj")
-	project.ImportMeshOBJs("default", )
-	
+	project.ImportMeshOBJs("default", "\n".join(l))
+	while project.GetMeshIOPercentage() != 100:
+		print("Progress: " + str(project.GetMeshIOPercentage()) + "%")
+		print("Current mesh: "  + project.GetMeshIOName() + "\n")
+		time.sleep(1)
 
 def main():
 	if not os.path.exists("output"):
