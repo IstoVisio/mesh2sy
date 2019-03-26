@@ -30,15 +30,27 @@ def copyEmpty(name):
 def convertMeshes(path):
 	name = ntpath.basename(path)
 	copyEmpty(name)
-	projectPath = "output/" + name + "/" + name + ".syg"
+	projectPath = os.path.join(os.getcwd(), "output\\" + name + "\\" + name + ".syg")
+	print(projectPath)
 	project = pyglass.OpenProject(pyglass.path(projectPath))
 	l = glob.glob(path + "\\*.obj")
 	project.ImportMeshOBJs("default", "\n".join(l))
 	while project.GetMeshIOPercentage() != 100:
 		print("Progress: " + str(project.GetMeshIOPercentage()) + "%")
 		print("Current mesh: "  + project.GetMeshIOName() + "\n")
-		time.sleep(1)
-
+		time.sleep(2)
+	vl = pyglass.VolumeLibrary()
+	vl.ReloadLibrary()
+	entry = vl.CreateEntryFromPath(projectPath, name)
+	vl.PutEntry(entry)
+	project.RandomizeMeshColors()
+	
+def importProject(projectPath):
+	vl = pyglass.VolumeLibrary()
+	vl.ReloadLibrary()
+	entry = vl.GetEntryFromPath(projectPath)
+	vl.PutEntry(entry)
+	
 def main():
 	if not os.path.exists("output"):
 		os.mkdir("output")
